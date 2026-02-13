@@ -1,63 +1,93 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { TrendingUp, PieChart, BarChart3 } from "lucide-react";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="min-h-screen bg-gradient-to-br from-background via-[#fff5f9] to-[#fff9e6]">
+      {/* Header */}
+      <header className="container mx-auto px-4 py-6 flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+            <TrendingUp className="w-6 h-6 text-white" />
+          </div>
+          <h1 className="text-2xl font-bold  text-transparent">
+            StockFolio
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="flex gap-4">
+          <Link href="/signin">
+            <Button variant="ghost">Sign In</Button>
+          </Link>
+          <Link href="/signup">
+            <Button>Get Started</Button>
+          </Link>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <main className="container mx-auto px-4 py-20">
+        <div className="max-w-4xl mx-auto text-center">
+        <h1 className="text-4xl md:text-5xl font-bold leading-tight bg-gradient-to-r from-pink-400 via-pink-300 to-orange-400 bg-clip-text text-transparent mb-10">
+  Manage Your Stock Portfolio with Confidence
+</h1>
+
+<p className="text-xl text-muted-foreground mt-0 mb-8">
+
+            Track your investments, monitor live market prices, and visualize your
+            portfolio performance all in one place.
+          </p>
+
+          <div className="flex gap-4 justify-center">
+            <Link href="/signup">
+              <Button size="lg" className="text-lg px-8">
+                Start Tracking Now
+              </Button>
+            </Link>
+
+            <Link href="/signin">
+              <Button size="lg" variant="outline" className="text-lg px-8">
+                Sign In
+              </Button>
+            </Link>
+          </div>
+        </div>
+
+        {/* Features */}
+        <div className="grid md:grid-cols-3 gap-8 mt-20 max-w-5xl mx-auto">
+          <div className="bg-card p-8 rounded-lg shadow-md border border-border">
+            <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+              <PieChart className="w-6 h-6 text-primary" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2">Portfolio Tracking</h3>
+            <p className="text-muted-foreground">
+              Track all your stocks with average purchase price, shares owned, and
+              real-time profit/loss calculations.
+            </p>
+          </div>
+
+          <div className="bg-card p-8 rounded-lg shadow-md border border-border">
+            <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center mb-4">
+              <TrendingUp className="w-6 h-6 text-secondary" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2">Live Market Prices</h3>
+            <p className="text-muted-foreground">
+              Get real-time stock price updates and make informed decisions based
+              on current market conditions.
+            </p>
+          </div>
+
+          <div className="bg-card p-8 rounded-lg shadow-md border border-border">
+            <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-4">
+              <BarChart3 className="w-6 h-6 text-accent-foreground" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2">Visual Reports</h3>
+            <p className="text-muted-foreground">
+              Visualize your portfolio performance with interactive charts and
+              detailed analytics.
+            </p>
+          </div>
         </div>
       </main>
     </div>
