@@ -24,22 +24,57 @@ export default function PortfolioPage() {
 
   async function addStock() {
     if (!symbol || !shares || !avgPrice) return;
-
+  
     const { data: { session } } = await supabase.auth.getSession();
+    const upperSymbol = symbol.trim().toUpperCase();
+  
+    const { data: existingStocks, error: fetchError } = await supabase
+      .from("stocks")
+      .select("*")
+      .eq("symbol", upperSymbol)
+      .eq("user_id", session?.user.id);
+  
+    console.log("Existing:", existingStocks);
+    console.log("Fetch error:", fetchError);
+  
+    if (existingStocks && existingStocks.length > 0) {
+      const existingStock = existingStocks[0];
+  
+      const totalShares = existingStock.shares + Number(shares);
 
-await supabase.from("stocks").insert({
-  user_id: session?.user.id, 
-  symbol: symbol.toUpperCase(),
-  shares: Number(shares),
-  avg_price: Number(avgPrice),
-});
+const newAvgPrice =
+  (
+    existingStock.shares * existingStock.avg_price +
+    Number(shares) * Number(avgPrice)
+  ) / totalShares;
 
-    setSymbol("");
-    setShares("");
-    setAvgPrice("");
+const { error: updateError } = await supabase
+  .from("stocks")
+  .update({
+    shares: totalShares,
+    avg_price: newAvgPrice,
+  })
+  .eq("id", existingStock.id);
+
+      console.log("Update error:", updateError);
+  
+    } else {
+      const { error: insertError } = await supabase
+        .from("stocks")
+        .insert({
+          user_id: session?.user.id,
+          symbol: upperSymbol,
+          shares: Number(shares),
+          avg_price: Number(avgPrice),
+        });
+  
+      console.log("Insert error:", insertError);
+    }
+  
     fetchStocks();
   }
-
+  
+  
   async function deleteStock(id: string) {
     await supabase.from("stocks").delete().eq("id", id);
     fetchStocks();
