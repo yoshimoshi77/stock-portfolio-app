@@ -12,6 +12,9 @@ export default function PortfolioPage() {
   const [symbol, setSymbol] = useState("");
   const [shares, setShares] = useState("");
   const [avgPrice, setAvgPrice] = useState("");
+  const [editingStockId, setEditingStockId] = useState<string | null>(null);
+  const [editShares, setEditShares] = useState("");
+  const [editAvgPrice, setEditAvgPrice] = useState("");
 
   useEffect(() => {
     fetchStocks();
@@ -80,6 +83,20 @@ const { error: updateError } = await supabase
     fetchStocks();
   }
 
+  async function updateStock(id: string) {
+    await supabase
+      .from("stocks")
+      .update({
+        shares: Number(editShares),
+        avg_price: Number(editAvgPrice),
+      })
+      .eq("id", id);
+  
+    setEditingStockId(null);
+    fetchStocks();
+  }
+  
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#fff5f9] to-[#fff9e6] p-8">
       <div className="max-w-5xl mx-auto space-y-6">
@@ -124,32 +141,65 @@ const { error: updateError } = await supabase
           ) : (
             <div className="space-y-4">
               {stocks.map((stock) => (
-                <div
-                  key={stock.id}
-                  className="flex justify-between items-center border-b pb-3"
-                >
-                  <div>
-                    <div className="font-semibold">
-                      {stock.symbol}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      {stock.shares} shares @ ${stock.avg_price}
-                    </div>
-                  </div>
+  <div key={stock.id} className="border-b pb-3 space-y-3">
 
-                  <Button
-                    variant="destructive"
-                    onClick={() => deleteStock(stock.id)}
-                  >
-                    Remove
-                  </Button>
-                </div>
-              ))}
-            </div>
-          )}
-        </Card>
+    <div className="flex justify-between items-center">
+      <div>
+        <div className="font-semibold">
+          {stock.symbol}
+        </div>
+        <div className="text-sm text-muted-foreground">
+          {stock.shares} shares @ ${stock.avg_price}
+        </div>
+      </div>
 
+      <div className="flex gap-2">
+        <Button
+          variant="secondary"
+          onClick={() => {
+            setEditingStockId(stock.id);
+            setEditShares(stock.shares.toString());
+            setEditAvgPrice(stock.avg_price.toString());
+          }}
+        >
+          Edit
+        </Button>
+
+        <Button
+          variant="destructive"
+          onClick={() => deleteStock(stock.id)}
+        >
+          Remove
+        </Button>
       </div>
     </div>
-  );
+
+    {/* 🔥 Edit Form */}
+    {editingStockId === stock.id && (
+      <div className="flex gap-2">
+        <input
+          value={editShares}
+          onChange={(e) => setEditShares(e.target.value)}
+          className="border p-2 rounded"
+        />
+        <input
+          value={editAvgPrice}
+          onChange={(e) => setEditAvgPrice(e.target.value)}
+          className="border p-2 rounded"
+        />
+        <Button onClick={() => updateStock(stock.id)}>
+          Save
+        </Button>
+      </div>
+    )}
+
+  </div>
+))}
+</div>
+)}
+</Card>
+
+</div>
+</div>
+);
 }
