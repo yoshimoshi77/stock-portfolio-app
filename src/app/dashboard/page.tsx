@@ -167,7 +167,7 @@ export default function DashboardPage() {
                 View Portfolio
               </button>
               <button
-                onClick={() => router.push("/live-market")}
+                onClick={() => router.push("/market")}
                 className="w-full bg-orange-300 text-white py-2 px-4 rounded-md hover:bg-orange-400 transition"
               >
                 Live Market
