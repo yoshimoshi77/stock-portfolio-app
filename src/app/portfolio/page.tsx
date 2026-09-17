@@ -99,7 +99,7 @@ export default function PortfolioPage() {
       return;
     }
 
-    // If the stock already exists, update shares and weighted average price
+    // If stock already exists, calculate weighted average
     if (existingStocks && existingStocks.length > 0) {
       const existingStock = existingStocks[0];
 
@@ -127,14 +127,12 @@ export default function PortfolioPage() {
       }
     } else {
       // Add a brand-new stock
-      const { error: insertError } = await supabase
-        .from("stocks")
-        .insert({
-          user_id: session.user.id,
-          symbol: upperSymbol,
-          shares: numberOfShares,
-          avg_price: purchasePrice,
-        });
+      const { error: insertError } = await supabase.from("stocks").insert({
+        user_id: session.user.id,
+        symbol: upperSymbol,
+        shares: numberOfShares,
+        avg_price: purchasePrice,
+      });
 
       if (insertError) {
         console.error("Insert error:", insertError);
@@ -142,18 +140,16 @@ export default function PortfolioPage() {
       }
     }
 
-    // Clear input fields
     setSymbol("");
     setShares("");
     setAvgPrice("");
 
-    // Refresh portfolio
     await fetchStocks();
 
     console.log("Stock saved successfully");
   }
 
-  // Delete a stock
+  // Delete stock
   async function deleteStock(id: string) {
     const {
       data: { session },
@@ -184,7 +180,7 @@ export default function PortfolioPage() {
     await fetchStocks();
   }
 
-  // Edit an existing stock
+  // Update existing stock
   async function updateStock(id: string) {
     const newShares = Number(editShares);
     const newAvgPrice = Number(editAvgPrice);
@@ -236,52 +232,74 @@ export default function PortfolioPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#fff5f9] to-[#fff9e6] p-8">
-      <div className="max-w-5xl mx-auto space-y-6">
-        <h1 className="text-3xl font-bold">My Portfolio</h1>
+    <div className="min-h-screen bg-gradient-to-br from-[#fff5f9] to-[#fff9e6] px-3 py-4 sm:p-4 lg:p-8">
+      <div className="max-w-5xl mx-auto space-y-5 sm:space-y-6">
+        <h1 className="text-2xl sm:text-3xl font-bold">My Portfolio</h1>
 
         {/* Add Stock */}
-        <Card className="p-6 space-y-4">
+        <Card className="p-4 sm:p-6 space-y-4">
           <h2 className="font-semibold">Add Stock</h2>
 
-          <div className="flex gap-4">
-            <input
-              placeholder="Symbol (AAPL)"
-              value={symbol}
-              onChange={(e) => setSymbol(e.target.value)}
-              className="border p-2 rounded w-full"
-            />
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+            <div className="w-full">
+              <label className="block sm:hidden text-sm font-medium mb-1.5">
+                Symbol
+              </label>
 
-            <input
-              placeholder="Shares"
-              type="number"
-              min="0"
-              step="any"
-              value={shares}
-              onChange={(e) => setShares(e.target.value)}
-              className="border p-2 rounded w-full"
-            />
+              <input
+                placeholder="Symbol (AAPL)"
+                value={symbol}
+                onChange={(e) => setSymbol(e.target.value)}
+                className="border p-2.5 rounded w-full min-w-0"
+              />
+            </div>
 
-            <input
-              placeholder="Avg Price"
-              type="number"
-              min="0"
-              step="any"
-              value={avgPrice}
-              onChange={(e) => setAvgPrice(e.target.value)}
-              className="border p-2 rounded w-full"
-            />
+            <div className="w-full">
+              <label className="block sm:hidden text-sm font-medium mb-1.5">
+                Shares
+              </label>
 
-            <Button type="button" onClick={addStock}>
-              Add
+              <input
+                placeholder="Shares"
+                type="number"
+                min="0"
+                step="any"
+                value={shares}
+                onChange={(e) => setShares(e.target.value)}
+                className="border p-2.5 rounded w-full min-w-0"
+              />
+            </div>
+
+            <div className="w-full">
+              <label className="block sm:hidden text-sm font-medium mb-1.5">
+                Average Price
+              </label>
+
+              <input
+                placeholder="Avg Price"
+                type="number"
+                min="0"
+                step="any"
+                value={avgPrice}
+                onChange={(e) => setAvgPrice(e.target.value)}
+                className="border p-2.5 rounded w-full min-w-0"
+              />
+            </div>
+
+            <Button
+              type="button"
+              onClick={addStock}
+              className="w-full sm:w-auto sm:self-end"
+            >
+              Add Stock
             </Button>
           </div>
         </Card>
 
         {/* Holdings */}
-        <Card className="p-6">
+        <Card className="p-4 sm:p-6">
           {stocks.length === 0 ? (
-            <p className="text-muted-foreground text-center">
+            <p className="text-muted-foreground text-center py-4">
               Your portfolio is empty
             </p>
           ) : (
@@ -289,13 +307,11 @@ export default function PortfolioPage() {
               {stocks.map((stock) => (
                 <div
                   key={stock.id}
-                  className="border-b pb-3 space-y-3"
+                  className="border-b last:border-b-0 pb-4 last:pb-0 space-y-3"
                 >
-                  <div className="flex justify-between items-center">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
                     <div>
-                      <div className="font-semibold">
-                        {stock.symbol}
-                      </div>
+                      <div className="font-semibold">{stock.symbol}</div>
 
                       <div className="text-sm text-muted-foreground">
                         {stock.shares} shares @ $
@@ -306,6 +322,7 @@ export default function PortfolioPage() {
                     <div className="flex gap-2">
                       <Button
                         variant="secondary"
+                        className="flex-1 sm:flex-none"
                         onClick={() => {
                           setEditingStockId(stock.id);
                           setEditShares(stock.shares.toString());
@@ -316,17 +333,17 @@ export default function PortfolioPage() {
                       </Button>
 
                       <Button
-                        variant="destructive"
-                        onClick={() => deleteStock(stock.id)}
-                      >
-                        Remove
-                      </Button>
+  className="flex-1 sm:flex-none bg-[#D93670] text-white hover:bg-[#C42E62]"
+  onClick={() => deleteStock(stock.id)}
+>
+  Remove
+</Button>
                     </div>
                   </div>
 
                   {/* Edit Form */}
                   {editingStockId === stock.id && (
-                    <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2 pt-2">
                       <input
                         type="number"
                         min="0"
@@ -334,7 +351,7 @@ export default function PortfolioPage() {
                         value={editShares}
                         onChange={(e) => setEditShares(e.target.value)}
                         placeholder="Shares"
-                        className="border p-2 rounded"
+                        className="border p-2.5 rounded w-full min-w-0"
                       />
 
                       <input
@@ -344,15 +361,19 @@ export default function PortfolioPage() {
                         value={editAvgPrice}
                         onChange={(e) => setEditAvgPrice(e.target.value)}
                         placeholder="Average Price"
-                        className="border p-2 rounded"
+                        className="border p-2.5 rounded w-full min-w-0"
                       />
 
-                      <Button onClick={() => updateStock(stock.id)}>
+                      <Button
+                        className="w-full sm:w-auto"
+                        onClick={() => updateStock(stock.id)}
+                      >
                         Save
                       </Button>
 
                       <Button
                         variant="secondary"
+                        className="w-full sm:w-auto"
                         onClick={() => {
                           setEditingStockId(null);
                           setEditShares("");

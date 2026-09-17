@@ -52,7 +52,7 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-[#fff5f9] to-[#fff9e6] flex items-center justify-center p-4">
+    <div className="min-h-[calc(100vh-104px)] flex items-center justify-center">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-2 text-center">
           <div className="flex items-center justify-center gap-2 mb-2">
