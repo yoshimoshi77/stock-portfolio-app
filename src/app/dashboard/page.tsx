@@ -19,22 +19,39 @@ export default function DashboardPage() {
   }, []);
 
   async function checkAuth() {
-    const { data: { session } } = await supabase.auth.getSession();
-
-    if (!session) {
-      router.push("/signin");
-      return;
+    try {
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
+  
+      if (sessionError) {
+        console.error("Session error:", sessionError);
+        return;
+      }
+  
+      if (!session) {
+        router.push("/signin");
+        return;
+      }
+  
+      setUser(session.user);
+  
+      const { data, error } = await supabase
+        .from("stocks")
+        .select("*")
+        .eq("user_id", session.user.id);
+  
+      if (error) {
+        console.error("Stocks error:", error);
+      } else {
+        setStocks(data || []);
+      }
+    } catch (error) {
+      console.error("Dashboard error:", error);
+    } finally {
+      setLoading(false);
     }
-
-    setUser(session.user);
-
-    const { data } = await supabase
-      .from("stocks")
-      .select("*")
-      .eq("user_id", session.user.id);
-
-    setStocks(data || []);
-    setLoading(false);
   }
 
   const calculateTotals = () => {

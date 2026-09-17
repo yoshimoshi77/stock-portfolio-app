@@ -7,7 +7,12 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
@@ -15,11 +20,12 @@ import { TrendingUp } from "lucide-react";
 
 export default function SignInPage() {
   const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const supabase = createClient();
 
+  const supabase = createClient();
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,18 +59,28 @@ export default function SignInPage() {
             <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
               <TrendingUp className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-700 via-rose-600 to-orange-600 bg-clip-text text-transparent">
               StockFolio
             </h1>
           </div>
-          <h2 className="text-2xl font-semibold">Welcome Back</h2>
-          <p className="text-muted-foreground">Sign in to your account</p>
+
+          <h2 className="text-2xl font-semibold">
+            Welcome Back
+          </h2>
+
+          <p className="text-muted-foreground">
+            Sign in to your account
+          </p>
         </CardHeader>
 
         <form onSubmit={handleSignIn}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">
+                Email
+              </Label>
+
               <Input
                 id="email"
                 type="email"
@@ -76,7 +92,10 @@ export default function SignInPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">
+                Password
+              </Label>
+
               <Input
                 id="password"
                 type="password"
@@ -89,7 +108,11 @@ export default function SignInPage() {
           </CardContent>
 
           <CardFooter className="flex flex-col gap-4">
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={loading}
+            >
               {loading ? "Signing in..." : "Sign In"}
             </Button>
 
